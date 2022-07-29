@@ -3,6 +3,9 @@
 > 只是会在屏幕上跳来跳去的方块...
 
 
+> ### 下载: https://github.com/LSDogX/SquarePet/releases
+
+
 ![image](https://user-images.githubusercontent.com/61925478/181720441-815017f6-8dab-4eec-b06a-468b93d17b96.png)
 
 
@@ -14,3 +17,7 @@
 
 ## 贡献
 - 哈？这种东西还会有人贡献代码吗？
+
+
+## 彩蛋
+- 附赠沙雕彩蛋、只要猛戳方块酱几秒后就可以看见了
