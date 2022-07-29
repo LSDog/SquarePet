@@ -9,6 +9,11 @@
 ![image](https://user-images.githubusercontent.com/61925478/181720441-815017f6-8dab-4eec-b06a-468b93d17b96.png)
 
 
+## 使用
+- 已安装 java8 或者以上的版本
+- **双击运行！**
+
+
 ## 构建
 - 使用 java8
 - 主类 `fun.LSDog.SquarePet.Main`
