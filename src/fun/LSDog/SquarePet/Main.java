@@ -1,9 +1,15 @@
 package fun.LSDog.SquarePet;
 
 import fun.LSDog.SquarePet.enums.Sounds;
+import fun.LSDog.SquarePet.objects.Sound;
 import fun.LSDog.SquarePet.objects.Square;
 import fun.LSDog.SquarePet.utils.FileUtil;
 
+import javax.sound.sampled.*;
+import java.applet.Applet;
+import java.applet.AudioClip;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 
 public class Main {
@@ -15,7 +21,7 @@ public class Main {
 
         Square frame = new Square(60, 0.5, 0);
 
-        URL iconUrl = FileUtil.getResource("/res/icon.png");
+        URL iconUrl = FileUtil.getResource("res/icon.png");
         if (iconUrl != null) {
             frame.setIconImage(frame.getToolkit().getImage(iconUrl));
         }

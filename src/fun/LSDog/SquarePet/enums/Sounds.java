@@ -1,8 +1,15 @@
 package fun.LSDog.SquarePet.enums;
 
+import com.sun.media.sound.JavaSoundAudioClip;
+import fun.LSDog.SquarePet.objects.Sound;
 import fun.LSDog.SquarePet.utils.FileUtil;
+import sun.applet.AppletAudioClip;
 import sun.audio.AudioPlayer;
 
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.swing.*;
+import java.applet.AudioClip;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -11,47 +18,37 @@ import java.net.URL;
 
 public enum Sounds {
 
-    HIT("/res/hit.wav");
+    HIT("res/hit.wav");
 
     private final String path;
-    private final URL url;
-    private byte[] byteSound;
+    private Sound sound = null;
 
     Sounds(String path) {
 
         this.path = path;
-        this.url = FileUtil.getResource(path);
+        URL url = FileUtil.getResource(path);
 
         try {
-
-            InputStream audioIn = url.openStream();
-
-            int i;
-            byte[] buff = new byte[1024];
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            while ((i = audioIn.read(buff)) != -1) {
-                out.write(buff, 0, i);
-            }
-            this.byteSound = out.toByteArray();
-
-        } catch (IOException e) {
+            sound = new Sound(path, url.openStream());
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
             e.printStackTrace();
         }
     }
 
-    private InputStream getAudioIn() throws IOException {
-        return new ByteArrayInputStream(byteSound);
+    public void play() {
+        if (sound != null) {
+            sound.reset();
+            sound.play();
+        }
     }
 
-    public void play() {
-        if (url == null || byteSound == null) return;
-        AudioPlayer.player.start(new ByteArrayInputStream(byteSound));
+    public Sound getSound() {
+        return sound;
     }
 
     public static void init() {
         for (Sounds s : Sounds.values()) {
             System.out.println("Sounds >> load sound: " + s.path);
-            s.play();
         }
     }
 

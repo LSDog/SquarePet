@@ -66,7 +66,7 @@ public class Square extends JFrame {
                 super.paint(g);
                 try {
                     Graphics graphics = getContentPane().getGraphics();
-                    BufferedImage image = ImageIO.read(FileUtil.getResource("/res/layer-shy.png"));
+                    BufferedImage image = ImageIO.read(FileUtil.getResource("res/layer-shy.png"));
                     graphics.drawImage(image, 0, 0, null);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -78,7 +78,6 @@ public class Square extends JFrame {
         face.setUndecorated(true); // 没有边框
         face.setAlwaysOnTop(true); // 置顶
         face.setType(Type.UTILITY);
-        // face.setFocusable(false);
         face.setBackground(new Color(0,0,0,0));
 
         addKeyListener(new KeyAdapter() {
@@ -148,6 +147,11 @@ public class Square extends JFrame {
         tip.showText("f = " + String.format("%.1f", friction), 750);
     }
 
+    public boolean haveGravity() {
+        // 精度丢失问题 (0.4-0.1 != 0.3)
+        return gravity < -0.01 || 0.01 < gravity;
+    }
+
     public void setGravity(double gravity) {
         this.gravity = gravity;
         tip.showText("g = " + String.format("%.1f", gravity), 750);
@@ -162,14 +166,14 @@ public class Square extends JFrame {
 
         // 物理计算
         if (!dragging) {
-            if (gravity != 0 || dx != 0 || dy != 0) {
+            if (haveGravity() || dx != 0 || dy != 0) {
 
                 tip.updateLocation();
 
                 double _dx = dx;
                 double _dy = dy;
 
-                if (gravity == 0) {
+                if (!haveGravity()) {
                     // 平面 摩擦
                     double r = Math.sqrt(dx*dx+dy*dy);
                     double fx = friction * dx / r;
@@ -183,7 +187,8 @@ public class Square extends JFrame {
                 _2Elems<Integer, Integer> crash = getEdgeHit(_dx, _dy); // 算下有没有碰撞什么的...
 
                 if ((prevYHit == null && crash.e2 != null) || (prevXHit == null && crash.e1 != null)) { // 假如上次没撞过
-                    new Thread(Sounds.HIT::play).start();
+                    //new Thread(Sounds.HIT::play).start();
+                    Sounds.HIT.play();
                 }
 
                 prevXHit = crash.e1;
@@ -192,7 +197,7 @@ public class Square extends JFrame {
                 if (crash.e1 != null) _dx = -_dx; // 碰撞反转方向
                 if (crash.e2 != null) _dy = -_dy;
 
-                if (gravity != 0.0) {
+                if (haveGravity()) {
                     double friDouble = friction * 2; // 为了明显一点动能损失大一些
                     // 重力 摩擦值变为动能损失
                     if (crash.e1 != null) {
@@ -200,9 +205,9 @@ public class Square extends JFrame {
                         else if (_dx < 0) _dx = - Math.abs(_dx + Math.max(friDouble, _dx));
                     }
                     if (crash.e2 != null) {
-                        double friGround = friction / 4 * Math.abs(gravity); // 地面摩擦
                         _dy += gravity; // 机械能守恒
-                        _dx -= _dx > 0 ? friGround : _dx < 0 ? - friGround : 0; // 地面摩擦
+                        double friGround = friction / 4 * Math.abs(gravity); // 地面摩擦
+                        _dx -= _dx > 0 ? friGround : _dx < 0 ? - friGround : 0;
                         if (_dy > 0) _dy = Math.abs(_dy - Math.min(friDouble, _dy));
                         else if (_dy < 0) _dy = - Math.abs(_dy + Math.max(friDouble, _dy));
                     }
@@ -228,18 +233,11 @@ public class Square extends JFrame {
         if (faceShowFrames/fps >= 2.5 && !faceShown) {
             System.out.println("show face");
             faceShowFrames *= 2;
-            setAlwaysOnTop(false);
             face.setVisible(true);
-            face.setAlwaysOnTop(true);
+            setAlwaysOnTop(false);
             faceShown = true;
             FadeOpacity.fade(face, 0, 1, 10, 50L, null);
         } else if (faceShown && faceShowFrames != -1) {
-            if (faceShowFrames > 0 && !Square.this.hasFocus() && !face.hasFocus()) {
-                System.out.println("force hide");
-                faceShowFrames = -1;
-                face.setVisible(false);
-                Square.this.setAlwaysOnTop(true);
-            }
             faceShowFrames--;
             if (faceShowFrames == 0) {
                 System.out.println("hide face");
