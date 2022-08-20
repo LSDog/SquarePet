@@ -10,13 +10,14 @@ public class FileUtil {
     public static URL getResource(String file) {
         if (file == null) return null;
         try {
-            URL url = Main.class.getResource(file);
-            if (url != null) {
-                return url;
-            }
             File iconFile = new File(file);
             if (iconFile.exists()) {
                 return iconFile.toURI().toURL();
+            }
+            if (!file.startsWith("/")) file = "/" + file;
+            URL url = FileUtil.class.getResource(file);
+            if (url != null) {
+                return url;
             }
         } catch (Exception ignore) {
         }

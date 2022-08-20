@@ -34,6 +34,7 @@ public class Square extends JFrame {
     private final JFrame face;
     private boolean faceShown;
     private int faceShowFrames = 0;
+    private final Dimension screen = getToolkit().getScreenSize();
 
     private final Queue<Long> cpsQueue = new ConcurrentLinkedQueue<>();
     private int prevCps = 0;
@@ -188,6 +189,9 @@ public class Square extends JFrame {
 
                 if ((prevYHit == null && crash.e2 != null) || (prevXHit == null && crash.e1 != null)) { // 假如上次没撞过
                     //new Thread(Sounds.HIT::play).start();
+                    /* 3D音效lol */
+                    float halfScreen = ((float) screen.getWidth()) / 2;
+                    Sounds.HIT.getSound().setPan((getX()-halfScreen)/halfScreen/1.5f);
                     Sounds.HIT.play();
                 }
 

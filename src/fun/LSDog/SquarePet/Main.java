@@ -27,6 +27,9 @@ public class Main {
         }
 
         Sounds.init();
+        Sounds.HIT.getSound().setDefaultPan(-0.15F);
+        Sounds.HIT.getSound().resetPan();
+
         frame.setVisible(true);
 
         frame.tip.showHtmlText(
